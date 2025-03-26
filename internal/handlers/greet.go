@@ -9,8 +9,7 @@ import (
 
 func Greet(w http.ResponseWriter, r *http.Request) {
 	var args models.GreetArgs
-	err := json.NewDecoder(r.Body).Decode(&args)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Bad request"})

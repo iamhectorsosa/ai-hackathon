@@ -23,6 +23,6 @@ func main() {
 	router.RegisterRoutes(r, llm)
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
-	fmt.Printf("Server starting on localhost:%s in %s mode\n", addr, cfg.Environment)
+	fmt.Printf("Server starting on localhost%s in %s mode\n", addr, cfg.Environment)
 	http.ListenAndServe(addr, r)
 }

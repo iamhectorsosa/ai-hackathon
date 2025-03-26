@@ -1,9 +1,6 @@
 package llm
 
 import (
-	"context"
-	"strings"
-
 	"github.com/anthropics/anthropic-sdk-go"
 	"github.com/anthropics/anthropic-sdk-go/option"
 	"github.com/iamhectorsosa/ai-hackathon/internal/config"
@@ -21,32 +18,4 @@ func New(cfg *config.Config) *Client {
 		client:       &client,
 		systemPrompt: systemPrompt,
 	}
-}
-
-func (c *Client) GetCompletion(ctx context.Context, prompt string) (string, error) {
-	message, err := c.client.Messages.New(ctx, anthropic.MessageNewParams{
-		Model:     anthropic.ModelClaude3_5HaikuLatest,
-		MaxTokens: 10,
-		System: []anthropic.TextBlockParam{
-			{
-				Type: "text",
-				Text: c.systemPrompt,
-			},
-		},
-		Messages: []anthropic.MessageParam{
-			anthropic.NewUserMessage(anthropic.NewTextBlock(prompt)),
-		},
-	})
-	if err != nil {
-		return "", err
-	}
-
-	var sb strings.Builder
-	for _, content := range message.Content {
-		if content.Type == "text" {
-			sb.WriteString(content.Text)
-		}
-	}
-
-	return sb.String(), nil
 }

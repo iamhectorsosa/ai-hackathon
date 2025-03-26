@@ -27,7 +27,7 @@ type AskArgs struct {
 }
 
 type AskReturn struct {
-	Answer string `json:"answer"`
+	Answer string `json:"answer" jsonschema_description:"The answers to the question prompted"`
 }
 
 type ErrorReturn struct {
