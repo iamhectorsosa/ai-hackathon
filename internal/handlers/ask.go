@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/iamhectorsosa/ai-hackathon/internal/llm"
@@ -11,18 +11,18 @@ import (
 
 func Ask(client *llm.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var args models.AskArgs
-		if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Bad request"})
+		args, err := decode[models.AskArgs](r)
+		if err != nil {
+			encode(w, http.StatusBadRequest, models.ErrorReturn{
+				Error: fmt.Sprintf("Bad request, %v", err),
+			})
 			return
 		}
 
 		if args.Question == "" {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Question is required"})
+			encode(w, http.StatusBadRequest, models.ErrorReturn{
+				Error: "Question is required",
+			})
 			return
 		}
 
@@ -35,31 +35,27 @@ func Ask(client *llm.Client) http.HandlerFunc {
 			toolChoice,
 		)
 		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
-			json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Couldn't process request"})
+			encode(w, http.StatusInternalServerError, models.ErrorReturn{
+				Error: fmt.Sprintf("Couldn't process request, %v", err),
+			})
 			return
 		}
 
 		var response models.AskReturn
 		if err := json.Unmarshal(answer, &response); err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
-			json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Couldn't process response"})
+			encode(w, http.StatusInternalServerError, models.ErrorReturn{
+				Error: fmt.Sprintf("Couldn't process response, %v", err),
+			})
 			return
 		}
 
 		if response.Answer == "" {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
-			json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Couldn't process response"})
+			encode(w, http.StatusInternalServerError, models.ErrorReturn{
+				Error: fmt.Sprintf("Couldn't process response, %v", err),
+			})
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		encode(w, http.StatusOK, response)
 	}
 }
