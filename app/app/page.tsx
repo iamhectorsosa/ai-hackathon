@@ -190,7 +190,7 @@ const Top3Posts: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.slice(0, 3).map((post) => (
+          {data.posts.slice(0, 3).map((post) => (
             <div
               key={post.id}
               className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 flex items-center"
@@ -248,7 +248,7 @@ const LatestsPosts: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((post) => (
+          {data.posts.map((post) => (
             <div
               key={post.id}
               className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"

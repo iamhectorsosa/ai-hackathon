@@ -1,55 +1,24 @@
 import { queryOptions } from "@tanstack/react-query";
-
-async function throwServerError(response: Response): Promise<void> {
-  const errorData: ServerError = await response
-    .json()
-    .catch(() => ({ error: "Unknown error" }));
-  throw new Error(
-    errorData.error || `Request failed with status ${response.status}`,
-  );
-}
+import { fetchGet, fetchPost } from "./api.helpers";
 
 export const api = {
   getStatus: queryOptions({
     queryKey: ["getStatus"],
-    queryFn: async (): Promise<Status> => {
-      const response = await fetch("/_api/status");
-      if (!response.ok) await throwServerError(response);
-      return await response.json();
-    },
+    queryFn: () => fetchGet<StatusReturn>("status"),
   }),
   getError: queryOptions({
     queryKey: ["getError"],
     retry: 1,
-    queryFn: async (): Promise<Status> => {
-      const response = await fetch("/_api/error");
-      if (!response.ok) await throwServerError(response);
-      return await response.json();
-    },
+    queryFn: () => fetchGet<ErrorResponse>("error"),
   }),
   getPosts: queryOptions({
     queryKey: ["getPosts"],
-    queryFn: async (): Promise<Array<Post>> => {
-      await new Promise((resolve) => setTimeout(resolve, Math.random() * 2000));
-      const response = await fetch("/_api/posts");
-      if (!response.ok) await throwServerError(response);
-      return await response.json();
-    },
+    queryFn: () => fetchGet<PostReturn>("posts"),
   }),
-  greet: async (payload: GreetPayload): Promise<GreetResponse> => {
-    const response = await fetch("/_api/greet", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) await throwServerError(response);
-    return await response.json();
-  },
+  greet: (args: GreetArgs) => fetchPost<GreetArgs, GreetReturn>("greet", args),
 };
 
-export type Status = {
+export type StatusReturn = {
   status: string;
 };
 
@@ -59,14 +28,18 @@ export type Post = {
   body: string;
 };
 
-export type GreetPayload = {
+export type PostReturn = {
+  posts: Array<Post>;
+};
+
+export type GreetArgs = {
   message: string;
 };
 
-export type GreetResponse = {
+export type GreetReturn = {
   message: string;
 };
 
-export type ServerError = {
+export type ErrorResponse = {
   error: string;
 };
