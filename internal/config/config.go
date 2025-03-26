@@ -10,12 +10,14 @@ import (
 type Config struct {
 	Port        string
 	Environment string
+	APIKey      string
 }
 
 func Load() *Config {
 	cfg := &Config{
 		Port:        "8080",
 		Environment: "development",
+		APIKey:      "",
 	}
 
 	envMap, err := godotenv.Read()
@@ -30,6 +32,10 @@ func Load() *Config {
 
 	if env := envMap["ENVIRONMENT"]; strings.TrimSpace(env) != "" {
 		cfg.Environment = env
+	}
+
+	if apiKey := envMap["API_KEY"]; strings.TrimSpace(apiKey) != "" {
+		cfg.APIKey = apiKey
 	}
 
 	return cfg

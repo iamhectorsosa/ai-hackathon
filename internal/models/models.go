@@ -22,6 +22,14 @@ type GreetReturn struct {
 	Message string `json:"message"`
 }
 
+type AskArgs struct {
+	Question string `json:"question"`
+}
+
+type AskReturn struct {
+	Answer string `json:"answer"`
+}
+
 type ErrorReturn struct {
 	Error string `json:"error"`
 }

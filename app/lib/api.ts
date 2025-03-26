@@ -9,13 +9,14 @@ export const api = {
   getError: queryOptions({
     queryKey: ["getError"],
     retry: 1,
-    queryFn: () => fetchGet<ErrorResponse>("error"),
+    queryFn: () => fetchGet<ErrorReturn>("error"),
   }),
   getPosts: queryOptions({
     queryKey: ["getPosts"],
     queryFn: () => fetchGet<PostReturn>("posts"),
   }),
   greet: (args: GreetArgs) => fetchPost<GreetArgs, GreetReturn>("greet", args),
+  ask: (args: AskArgs) => fetchPost<AskArgs, AskReturn>("ask", args),
 };
 
 export type StatusReturn = {
@@ -40,6 +41,14 @@ export type GreetReturn = {
   message: string;
 };
 
-export type ErrorResponse = {
+export type AskArgs = {
+  question: string;
+};
+
+export type AskReturn = {
+  answer: string;
+};
+
+export type ErrorReturn = {
   error: string;
 };

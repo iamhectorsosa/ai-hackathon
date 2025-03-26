@@ -8,25 +8,25 @@ import (
 )
 
 func Greet(w http.ResponseWriter, r *http.Request) {
-	var payload models.GreetArgs
-	err := json.NewDecoder(r.Body).Decode(&payload)
+	var args models.GreetArgs
+	err := json.NewDecoder(r.Body).Decode(&args)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.ErrorReturn{Error: err.Error()})
+		json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Bad request"})
 		return
 	}
 
-	if payload.Message == "" {
+	if args.Message == "" {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.ErrorReturn{Error: "message is required"})
+		json.NewEncoder(w).Encode(models.ErrorReturn{Error: "Message is required"})
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	response := models.GreetReturn{
-		Message: payload.Message + " is OK!",
+		Message: args.Message + " is OK!",
 	}
 	json.NewEncoder(w).Encode(response)
 }

@@ -1,9 +1,9 @@
-import { ErrorResponse } from "./api";
+import { ErrorReturn } from "./api";
 
 export const API_BASE = "/_api";
 
 export async function throwServerError(response: Response): Promise<void> {
-  const errorData: ErrorResponse = await response
+  const errorData: ErrorReturn = await response
     .json()
     .catch(() => ({ error: "Unknown error" }));
   throw new Error(
