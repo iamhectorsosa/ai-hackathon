@@ -26,11 +26,14 @@ func Ask(client *llm.Client) http.HandlerFunc {
 			return
 		}
 
+		basePrompt := `Please limit your answer to 1 very concise sentence only.`
+		prompt := fmt.Sprintf("%s %s", basePrompt, args.Question)
+
 		// INFO: for a structured response the client requires tools, ref: https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
 		tool, toolChoice := llm.GenerateTool[models.AskReturn]("get_ask_return", "structured response to the question asked")
 		answer, err := client.GetStructuredCompletion(
 			r.Context(),
-			args.Question,
+			prompt,
 			tool,
 			toolChoice,
 		)
