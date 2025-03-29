@@ -45,7 +45,7 @@ func (c *Client) GetStructuredCompletion(
 	message, err := c.client.Messages.New(ctx, anthropic.MessageNewParams{
 		Model: anthropic.ModelClaude3_5HaikuLatest,
 		// INFO: tools typically require more tokens
-		MaxTokens: 360,
+		MaxTokens: 2400,
 		System: []anthropic.TextBlockParam{
 			{
 				Type: "text",
