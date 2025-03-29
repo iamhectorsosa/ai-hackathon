@@ -1,5 +1,11 @@
 package models
 
+import (
+	"fmt"
+	"reflect"
+	"strings"
+)
+
 type StatusReturn struct {
 	Status string `json:"status"`
 }
@@ -28,6 +34,62 @@ type AskArgs struct {
 
 type AskReturn struct {
 	Answer string `json:"answer" jsonschema_description:"The answers to the question prompted"`
+}
+
+type CreateJobArgs struct {
+	Prompt string `json:"prompt"`
+}
+
+type ExperienceLevel int
+
+type CreateJobReturn struct {
+	Title            string          `json:"title" jsonschema_description:"Job title"`
+	Description      string          `json:"description" jsonschema_description:"Full job description"`
+	Requirements     []string        `json:"requirements" jsonschema_description:"List of job requirements"`
+	Responsibilities []string        `json:"responsibilities" jsonschema_description:"Key responsibilities and duties for the role"`
+	ExperienceLevel  ExperienceLevel `json:"experienceLevel" jsonschema_description:"Required experience level"`
+	Skills           []string        `json:"skills" jsonschema_description:"Array of required skills"`
+	Keywords         []string        `json:"keywords" jsonschema_description:"Searchable keywords related to the position"`
+}
+
+func (r *CreateJobReturn) Validate() error {
+	var missingFields []string
+	val := reflect.ValueOf(*r)
+	typ := val.Type()
+
+	for i := range val.NumField() {
+		field := val.Field(i)
+		fieldTyp := typ.Field(i)
+
+		isValid := true
+
+		switch field.Kind() {
+		case reflect.String:
+			isValid = field.String() != ""
+		case reflect.Slice, reflect.Array:
+			isValid = field.Len() > 0
+		case reflect.Map:
+			isValid = field.Len() > 0
+		case reflect.Ptr, reflect.Interface:
+			isValid = !field.IsNil()
+		}
+
+		if !isValid {
+			jsonTag := fieldTyp.Tag.Get("json")
+			fieldName := strings.Split(jsonTag, ",")[0]
+			if fieldName == "" {
+				fieldName = strings.ToLower(fieldTyp.Name)
+			}
+			missingFields = append(missingFields, fieldName)
+		}
+
+	}
+
+	if len(missingFields) > 0 {
+		return fmt.Errorf("required fields: %s", strings.Join(missingFields, ", "))
+	}
+
+	return nil
 }
 
 type ErrorReturn struct {

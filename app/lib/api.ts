@@ -17,6 +17,8 @@ export const api = {
   }),
   greet: (args: GreetArgs) => fetchPost<GreetArgs, GreetReturn>("greet", args),
   ask: (args: AskArgs) => fetchPost<AskArgs, AskReturn>("ask", args),
+  createJob: (args: CreateJobArgs) =>
+    fetchPost<CreateJobArgs, CreateJobReturn>("create-job", args),
 };
 
 export type StatusReturn = {
@@ -47,6 +49,20 @@ export type AskArgs = {
 
 export type AskReturn = {
   answer: string;
+};
+
+export type CreateJobArgs = {
+  prompt: string;
+};
+
+export type CreateJobReturn = {
+  title: string;
+  description: string;
+  requirements: Array<string>;
+  responsibilities: Array<string>;
+  experienceLevel: number;
+  skills: Array<string>;
+  keywords: Array<string>;
 };
 
 export type ErrorReturn = {
