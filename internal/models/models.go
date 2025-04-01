@@ -36,6 +36,17 @@ type AskReturn struct {
 	Answer string `json:"answer" jsonschema_description:"The answers to the question prompted"`
 }
 
+type CrawlArgs struct {
+	Url             string `json:"url"`
+	MaxDepth        int    `json:"maxDepth,omitempty"`
+	MaxPathSegments int    `json:"maxPathSegments,omitempty"`
+}
+
+type CrawlReturn struct {
+	Links   []string          `json:"links"`
+	Results map[string]string `json:"results"`
+}
+
 type CreateJobArgs struct {
 	Prompt string `json:"prompt"`
 }
