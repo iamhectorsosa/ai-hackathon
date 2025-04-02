@@ -38,6 +38,7 @@ func (c *Client) GetCompletion(ctx context.Context, prompt string) (string, erro
 
 func (c *Client) GetStructuredCompletion(
 	ctx context.Context,
+	context string,
 	prompt string,
 	tool *anthropic.ToolParam,
 	toolChoice *anthropic.ToolChoiceToolParam,
@@ -53,7 +54,14 @@ func (c *Client) GetStructuredCompletion(
 			},
 			{
 				Type: "text",
-				Text: "In this environment you have access to a set of tools you can use to answer the user's question. You should use JSON format. Specifications are available in JSONSchema format.",
+				Text: "In this environment you have access to a set of tools you can use to answer the user's request. You should use JSON format. Specifications are available in JSONSchema format.",
+			},
+			{
+				Type: "text",
+				Text: context,
+				CacheControl: anthropic.CacheControlEphemeralParam{
+					Type: "ephemeral",
+				},
 			},
 		},
 		Messages: []anthropic.MessageParam{

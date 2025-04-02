@@ -23,4 +23,6 @@ func RegisterRoutes(r *chi.Mux, llm *llm.Client) {
 	r.Post("/crawl", handlers.Crawl)
 
 	r.Post("/create-job", handlers.CreateJob(llm))
+
+	r.Post("/generate-tests", handlers.GenerateTests(llm))
 }

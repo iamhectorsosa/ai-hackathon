@@ -32,6 +32,7 @@ func CreateJob(client *llm.Client) http.HandlerFunc {
 		tool, toolChoice := llm.GenerateTool[models.CreateJobReturn]("create_job_return", "structure response for generation a job posting based on a prompt")
 		res, err := client.GetStructuredCompletion(
 			r.Context(),
+			"",
 			prompt,
 			tool,
 			toolChoice,

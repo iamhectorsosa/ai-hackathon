@@ -33,6 +33,7 @@ func Ask(client *llm.Client) http.HandlerFunc {
 		tool, toolChoice := llm.GenerateTool[models.AskReturn]("get_ask_return", "structured response to the question asked")
 		answer, err := client.GetStructuredCompletion(
 			r.Context(),
+			"",
 			prompt,
 			tool,
 			toolChoice,
